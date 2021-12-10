@@ -17,7 +17,7 @@
 #include <zigbee/zigbee_error_handler.h>
 #include <zigbee/zigbee_app_utils.h>
 #include <zb_nrf_platform.h>
-
+#include <addons/zcl/zb_zcl_temp_measurement_addons.h>
 
 /* Device endpoint, used to receive ZCL commands. */
 #define APP_TEMPLATE_ENDPOINT           10
@@ -39,6 +39,8 @@
 
 LOG_MODULE_REGISTER(app);
 
+zb_zcl_temp_measurement_attrs_t temp_attr;
+
 /* Main application customizable context.
  * Stores all settings and static values.
  */
@@ -58,6 +60,14 @@ ZB_ZCL_DECLARE_BASIC_ATTRIB_LIST(
 	basic_attr_list,
 	&dev_ctx.basic_attr.zcl_version,
 	&dev_ctx.basic_attr.power_source);
+
+ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST (
+	temp_sensor_attr_list,
+	&temp_attr.measure_value,
+	&temp_attr.min_measure_value,
+	&temp_attr.max_measure_value,
+	&temp_attr.tolerance
+);
 
 ZBOSS_DECLARE_DEVICE_CTX_1_EP(
 	app_template_ctx,
