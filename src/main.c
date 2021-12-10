@@ -59,16 +59,6 @@ ZB_ZCL_DECLARE_BASIC_ATTRIB_LIST(
 	&dev_ctx.basic_attr.zcl_version,
 	&dev_ctx.basic_attr.power_source);
 
-ZB_HA_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(
-	app_template_clusters,
-	identify_attr_list,
-	basic_attr_list);
-
-ZB_HA_DECLARE_RANGE_EXTENDER_EP(
-	app_template_ep,
-	APP_TEMPLATE_ENDPOINT,
-	app_template_clusters);
-
 ZBOSS_DECLARE_DEVICE_CTX_1_EP(
 	app_template_ctx,
 	app_template_ep);
