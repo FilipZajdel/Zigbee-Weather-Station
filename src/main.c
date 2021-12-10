@@ -83,8 +83,8 @@ ZB_HA_DECLARE_TEMPERATURE_SENSOR_EP(
 );
 
 ZBOSS_DECLARE_DEVICE_CTX_1_EP(
-	app_template_ctx,
-	app_template_ep);
+	temp_sensor_ctx,
+	temp_sensor_ep);
 
 
 /**@brief Function for initializing all clusters attributes. */
@@ -148,7 +148,7 @@ static void start_identifying(zb_bufid_t bufid)
 	    ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE) {
 		LOG_INF("Enter identify mode");
 		zb_err_code = zb_bdb_finding_binding_target(
-			APP_TEMPLATE_ENDPOINT);
+			TEMPERATURE_SENSOR_ENDPOINT);
 		ZB_ERROR_CHECK(zb_err_code);
 	} else {
 		LOG_INF("Cancel identify mode");
@@ -231,12 +231,12 @@ void main(void)
 	configure_gpio();
 
 	/* Register device context (endpoints). */
-	ZB_AF_REGISTER_DEVICE_CTX(&app_template_ctx);
+	ZB_AF_REGISTER_DEVICE_CTX(&temp_sensor_ctx);
 
 	app_clusters_attr_init();
 
 	/* Register handlers to identify notifications */
-	ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(APP_TEMPLATE_ENDPOINT, identify_cb);
+	ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(TEMPERATURE_SENSOR_ENDPOINT, identify_cb);
 
 	/* Start Zigbee default thread */
 	zigbee_enable();
