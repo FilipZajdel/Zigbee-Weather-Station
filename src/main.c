@@ -69,6 +69,13 @@ ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST (
 	&temp_attr.tolerance
 );
 
+ZB_HA_DECLARE_TEMPERATURE_SENSOR_CLUSTER_LIST(
+	temp_sensor_cluster_list,
+	basic_attr_list,
+	identify_attr_list,
+	temp_sensor_attr_list
+);
+
 ZBOSS_DECLARE_DEVICE_CTX_1_EP(
 	app_template_ctx,
 	app_template_ep);
