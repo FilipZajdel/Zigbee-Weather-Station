@@ -20,7 +20,7 @@
 #include <addons/zcl/zb_zcl_temp_measurement_addons.h>
 
 /* Device endpoint, used to receive ZCL commands. */
-#define APP_TEMPLATE_ENDPOINT           10
+#define TEMPERATURE_SENSOR_ENDPOINT           13
 
 /* Type of power sources available for the device.
  * For possible values see section 3.2.2.2.8 of ZCL specification.
@@ -74,6 +74,12 @@ ZB_HA_DECLARE_TEMPERATURE_SENSOR_CLUSTER_LIST(
 	basic_attr_list,
 	identify_attr_list,
 	temp_sensor_attr_list
+);
+
+ZB_HA_DECLARE_TEMPERATURE_SENSOR_EP(
+	temp_sensor_ep,
+	TEMPERATURE_SENSOR_ENDPOINT,
+	temp_sensor_cluster_list
 );
 
 ZBOSS_DECLARE_DEVICE_CTX_1_EP(
