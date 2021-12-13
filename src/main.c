@@ -25,6 +25,8 @@
 #define TEMPERATURE_SENSOR_ENDPOINT           13
 #define PRESSURE_SENSOR_ENDPOINT              14
 
+#define WEATHER_STATION_UPDATE_ATTR_INTERVAL  (ZB_TIME_ONE_SECOND * 15)
+
 /* Type of power sources available for the device.
  * For possible values see section 3.2.2.2.8 of ZCL specification.
  */
@@ -250,6 +252,30 @@ void error(void)
 	}
 }
 
+static void pressure_sensor_attr_update(zb_uint8_t arg)
+{
+	static zb_int16_t temperature_value = 15;
+
+	temperature_value += 5;
+
+	zb_zcl_set_attr_val(TEMPERATURE_SENSOR_ENDPOINT, ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+						ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
+						(zb_uint8_t*)&temperature_value, ZB_FALSE);
+	ZB_SCHEDULE_APP_ALARM(pressure_sensor_attr_update, NULL, WEATHER_STATION_UPDATE_ATTR_INTERVAL);
+}
+
+static void temperature_sensor_attr_update(zb_uint8_t arg)
+{
+	static zb_int16_t pressure_value = 15;
+
+	pressure_value += 13;
+
+	zb_zcl_set_attr_val(PRESSURE_SENSOR_ENDPOINT, ZB_ZCL_CLUSTER_ID_PRESSURE_MEASUREMENT,
+						ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_VALUE_ID,
+						(zb_uint8_t*)&pressure_value, ZB_FALSE);
+	ZB_SCHEDULE_APP_ALARM(pressure_sensor_attr_update, NULL, WEATHER_STATION_UPDATE_ATTR_INTERVAL);
+}
+
 void main(void)
 {
 	LOG_INF("Starting Zigbee application template example");
@@ -264,6 +290,10 @@ void main(void)
 
 	/* Register handlers to identify notifications */
 	ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(TEMPERATURE_SENSOR_ENDPOINT, identify_cb);
+
+	pressure_sensor_attr_update(0);
+
+	temperature_sensor_attr_update(0);
 
 	/* Start Zigbee default thread */
 	zigbee_enable();
