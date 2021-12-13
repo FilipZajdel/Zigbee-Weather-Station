@@ -19,8 +19,11 @@
 #include <zb_nrf_platform.h>
 #include <addons/zcl/zb_zcl_temp_measurement_addons.h>
 
+#include "zb_ha_pressure_sensor.h"
+
 /* Device endpoint, used to receive ZCL commands. */
 #define TEMPERATURE_SENSOR_ENDPOINT           13
+#define PRESSURE_SENSOR_ENDPOINT              14
 
 /* Type of power sources available for the device.
  * For possible values see section 3.2.2.2.8 of ZCL specification.
@@ -40,6 +43,8 @@
 LOG_MODULE_REGISTER(app);
 
 zb_zcl_temp_measurement_attrs_t temp_attr;
+zb_zcl_pressure_measurement_attrs_t pres_attr;
+
 
 /* Main application customizable context.
  * Stores all settings and static values.
@@ -69,11 +74,26 @@ ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST (
 	&temp_attr.tolerance
 );
 
+ZB_ZCL_DECLARE_PRESSURE_MEASUREMENT_ATTRIB_LIST (
+	pres_sensor_attr_list,
+	&pres_attr.measure_value,
+	&pres_attr.min_measure_value,
+	&pres_attr.max_measure_value,
+	&pres_attr.tolerance
+);
+
 ZB_HA_DECLARE_TEMPERATURE_SENSOR_CLUSTER_LIST(
 	temp_sensor_cluster_list,
 	basic_attr_list,
 	identify_attr_list,
 	temp_sensor_attr_list
+);
+
+ZB_HA_DECLARE_PRESSURE_SENSOR_CLUSTER_LIST(
+	pres_sensor_cluster_list,
+	basic_attr_list,
+	identify_attr_list,
+	pres_sensor_attr_list
 );
 
 ZB_HA_DECLARE_TEMPERATURE_SENSOR_EP(
@@ -82,9 +102,16 @@ ZB_HA_DECLARE_TEMPERATURE_SENSOR_EP(
 	temp_sensor_cluster_list
 );
 
-ZBOSS_DECLARE_DEVICE_CTX_1_EP(
-	temp_sensor_ctx,
-	temp_sensor_ep);
+ZB_HA_DECLARE_PRESSURE_SENSOR_EP(
+	pres_sensor_ep,
+	PRESSURE_SENSOR_ENDPOINT,
+	pres_sensor_cluster_list
+);
+
+ZBOSS_DECLARE_DEVICE_CTX_2_EP(
+	weather_station_ctx,
+	temp_sensor_ep,
+	pres_sensor_ep);
 
 
 /**@brief Function for initializing all clusters attributes. */
@@ -231,7 +258,7 @@ void main(void)
 	configure_gpio();
 
 	/* Register device context (endpoints). */
-	ZB_AF_REGISTER_DEVICE_CTX(&temp_sensor_ctx);
+	ZB_AF_REGISTER_DEVICE_CTX(&weather_station_ctx);
 
 	app_clusters_attr_init();
 
